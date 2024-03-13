@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Графики Криптовалют</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="sidebar">
+            <div class="theme-switcher">
+                <button class="theme-switcher" onclick="toggleTheme()">
+                    <img id="theme-icon" src="icons/icon1.png" alt="Theme Icon" style="width: 70px; height:auto;">
+                </button>
+            </div>
+            <div class="timezones-container">
+                <div id="timeNYC" class="timezone">Нью-Йорк: Загрузка...</div>
+                <div id="timeLondon" class="timezone">Лондон: Загрузка...</div>
+                <div id="timeKyiv" class="timezone">Киев: Загрузка...</div>
+                <div id="timeTokyo" class="timezone">Токио: Загрузка...</div>
+            </div>
+        </div>
+        <div class="container">
+            <div id="recommendations" class="crypto-recommendations">Рекомендация: Загрузка...</div>
+            <div class="controls-container">
+                <div class="buttons-container">
+                    <button class="crypto-button" onclick="changeCrypto('bitcoin')">BTC</button>
+                    <button class="crypto-button" onclick="changeCrypto('ethereum')">ETH</button>
+                    <button class="crypto-button" onclick="changeCrypto('near')">NEAR</button>
+                    <button class="crypto-button" onclick="changeCrypto('binancecoin')">BNB</button>
+                    <button class="crypto-button" onclick="changeCrypto('ripple')">XRP</button>
+                    <button class="crypto-button" onclick="changeCrypto('arbitrum')">ARB</button>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="cryptoInput" placeholder="Введите ID криптовалюты (например, bitcoin)">
+                    <button onclick="requestCrypto()">Загрузить данные</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="cryptoChart"></canvas>
+                </div>
+            </div>
+            <div class="additional-charts-container">
+                <div class="macd-container">
+                    <h3>MACD</h3>
+                    <canvas id="macdChartNew"></canvas>
+                </div>
+                <div class="rsi-container">
+                    <h3>RSI</h3>
+                    <canvas id="rsiChartNew"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="script.js"></script>
+</body>
+</html>

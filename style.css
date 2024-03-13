@@ -1,0 +1,243 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    /* Установка сдержанного градиентного фона от темно-серого к мягкому фиолетовому и темно-красному */
+    background: linear-gradient(135deg, #7e7eff, #6f47cb82, #5278ff82, #43217581);
+    /* Гарантируем, что фон занимает полную доступную высоту */
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+/* Базовые темы */
+.light-theme {
+    --background-color: #e0e0e0ab; /* Светло-серый для фона, мягкий и спокойный */
+    --text-color: #333333; /* Темно-серый для текста, хороший контраст с фоном */
+    --container-background-color: #fafafabe; /* Очень светлый серый для контейнеров, чистый и яркий */
+    --button-background-color: #BDBDBD; /* Средний серый для кнопок, умеренный и профессиональный */
+    --button-hover-background-color: #9E9E9E; /* Темный серый для эффекта при наведении на кнопки */
+    --input-border-color: #CCCCCC; /* Светло-серый для границ ввода, ненавязчивый */
+    --timezone-background-color: #F5F5F5; /* Очень светлый серый для фонов временных зон, мягкий и нейтральный */
+}
+
+.dark-theme {
+    --background-color: #212121; /* Очень темный серый (почти черный) для фона, глубокий и интенсивный */
+    --text-color: #E0E0E0; /* Светло-серый для текста, отличный контраст с темным фоном */
+    --container-background-color: #424242; /* Темно-серый для контейнеров, добавляет глубину */
+    --button-background-color: #616161; /* Средне-серый для кнопок, сдержанный и элегантный */
+    --button-hover-background-color: #757575; /* Более темный серый для эффекта при наведении */
+    --input-border-color: #757575; /* Темный серый для границ ввода, отчетливый, но не резкий */
+    --timezone-background-color: #616161; /* Средне-серый для фонов временных зон, современный и сдержанный */
+}
+
+.neutral-theme {
+    --background-color: #BDBDBD; /* Средний серый для фона, универсальный и современный */
+    --text-color: #212121; /* Очень темный серый (почти черный) для текста, высокий контраст */
+    --container-background-color: #E0E0E0; /* Светло-серый для контейнеров, создает ощущение пространства */
+    --button-background-color: #9E9E9E; /* Темно-серый для кнопок, профессиональный и стильный */
+    --button-hover-background-color: #707070; /* Еще более темный серый для эффекта при наведении */
+    --input-border-color: #A4A4A4; /* Серый для границ ввода, четкий и эстетичный */
+    --timezone-background-color: #C2C2C2; /* Светлый серый для фонов временных зон, спокойный и нейтральный */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--container-background-color);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.buttons-container, .input-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.crypto-button {
+    padding: 10px 20px;
+    background-color: var(--button-background-color);
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.crypto-button:hover {
+    background-color: var(--button-hover-background-color);
+}
+
+.crypto-recommendations {
+    text-align: center;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.input-container input {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid var(--input-border-color);
+    border-radius: 5px;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+.input-container button {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--button-background-color);
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.input-container button:hover {
+    background-color: var(--button-hover-background-color);
+}
+
+.main-wrapper {
+    display: flex;
+    justify-content: flex-start; /* Располагаем дочерние элементы в начале контейнера */
+    align-items: flex-start; /* Дочерние элементы выравниваются по верхнему краю */
+}
+
+.timezones-container {
+    padding: 10px;
+    margin-right: 20px; /* Отступ справа, чтобы отделить от основного контента */
+    margin-left: 10px; /* Отступ слева от левой части сайта */
+    background-color: var(--timezone-background-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start; /* Выравниваем элементы по началу контейнера */
+}
+
+.timezone {
+    margin-bottom: 10px; /* Добавляем небольшой отступ между зонами */
+    /* Дополнительные стили для .timezone */
+}
+
+.main-content {
+    flex-grow: 1; /* Основной контент займет все оставшееся место */
+    /* Дополнительные стили для .main-content */
+}
+
+
+.additional-charts-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.macd-container, .rsi-container {
+    width: 100%; /* Чуть меньше половины, чтобы уместиться на странице */
+}
+
+h3 {
+    text-align: center;
+    color: var(--text-color);
+}
+
+/* Стилизация контейнера для графика */
+.chart-container {
+    width: 100% !important; /* Задает ширину canvas равной ширине его контейнера */
+    height: 500px !important; /* Фиксированная высота для canvas */
+    background-color: transparent; /* Легкий фоновый цвет для canvas */
+}
+
+/* Стилизация самого элемента canvas */
+#rsiChartNew, #macdChartNew {
+    width: 100% !important; /* Задает ширину canvas равной ширине его контейнера */
+    height: 500px !important; /* Фиксированная высота для canvas */
+    background-color: transparent; /* Легкий фоновый цвет для canvas */
+}
+
+/* Стилизация кнопок или других элементов управления графиком */
+.button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* Дополнительные стилизации для легенды, подписей и т.д., если они выводятся через HTML/CSS */
+.legend {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.theme-switcher {
+    padding: 5px; /* Уменьшенный размер */
+    width: 80px; /* Новая установка ширины */
+    height: 80px; /* Новая установка высоты */
+    border: none;
+    border-radius: 50%; /* Круглая форма */
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: transparent; /* Прозрачный фон */
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-switcher svg {
+    fill: currentColor; /* Цвет иконки соответствует цвету текста кнопки */
+    width: 40px; /* Новая установка ширины иконки */
+    height: auto; /* Автоматическая высота сохранит пропорции иконки */
+    transform: translateY(5px); /* Опускаем иконку немного ниже */
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none; /* Или можно преобразовать в выпадающее меню */
+    }
+
+    .container, .crypto-recommendations, .controls-container, .buttons-container, .input-container, .chart-container, .additional-charts-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .crypto-button, #cryptoInput {
+        width: 90%;
+        margin: 5px 0; /* Для лучшего размещения на экране */
+    }
+
+    .chart-container canvas, .additional-charts-container canvas {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar, .timezones-container, .buttons-container, .input-container {
+        width: 100%;
+        text-align: center;
+    }
+
+    .main-wrapper {
+        flex-direction: column;
+    }
+
+    .chart-container, .additional-charts-container {
+        width: 100%;
+    }
+}
