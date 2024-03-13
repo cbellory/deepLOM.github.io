@@ -238,7 +238,14 @@ h3 {
         flex-direction: column;
     }
 
-    .chart-container, .additional-charts-container {
+    .chart-container, .macd-container, .rsi-container {
         width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container, #cryptoChart, #macdChartNew, #rsiChartNew {
+        width: 100%; /* Полная ширина на малых экранах */
+        height: 250px; /* Более низкая высота для малых экранов */
     }
 }
