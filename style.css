@@ -5,7 +5,7 @@ body, html {
 
 body {
     /* Установка сдержанного градиентного фона от темно-серого к мягкому фиолетовому и темно-красному */
-    background: linear-gradient(135deg, #7e7eff, #6f47cb82, #5278ff82, #43217581);
+    background: linear-gradient(135deg, #ff0000, #ff000082, #ff000082, #ff000081);
     /* Гарантируем, что фон занимает полную доступную высоту */
     background-attachment: fixed;
     background-size: cover;
