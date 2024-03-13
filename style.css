@@ -207,7 +207,7 @@ h3 {
     transform: translateY(5px); /* Опускаем иконку немного ниже */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .sidebar {
         display: none; /* Или можно преобразовать в выпадающее меню */
     }
@@ -228,7 +228,7 @@ h3 {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .sidebar, .timezones-container, .buttons-container, .input-container {
         width: 100%;
         text-align: center;
@@ -243,7 +243,7 @@ h3 {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .chart-container, #cryptoChart, #macdChartNew, #rsiChartNew {
         width: 100%; /* Полная ширина на малых экранах */
         height: 250px; /* Более низкая высота для малых экранов */
