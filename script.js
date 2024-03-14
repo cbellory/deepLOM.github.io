@@ -42,17 +42,20 @@ async function changeCrypto(cryptoId) {
 
 // Функция для обновления графика
 function updateChart(prices, cryptoId) {
-    const priceValues = prices.map(price => price.y);
-    const pricedays = prices.map(price => price.x);
+    // Определяем шаг отбора точек. Например, берем каждую пятую точку
+    const samplingRate = 4;
+    const sampledPrices = prices.filter((_, index) => index % samplingRate === 0);
+    const priceValues = sampledPrices.map(price => price.y);
+    const pricedays = sampledPrices.map(price => price.x);
     
     const smaValues = calculateSMA(priceValues, 14); 
     
-    const smaPoints = prices.slice(14 - 1).map((price, index) => ({
+    // Также фильтруем точки для SMA, чтобы их количество соответствовало отфильтрованным данным
+    const smaPoints = sampledPrices.slice(14 - 1).map((price, index) => ({
         x: price.x,
-        y: smaValues[index]
-    }));
-    console.log(smaPoints);
-    
+        y: smaValues[index] || null // Используем || null для избежания ошибок, если smaValues[index] не существует
+    })).filter(point => point.y !== null); // Убираем точки, для которых не существует SMA
+
     if (cryptoChart) {
         cryptoChart.destroy(); 
     }
@@ -63,7 +66,7 @@ function updateChart(prices, cryptoId) {
         data: {
             datasets: [{
                 label: `${cryptoId.toUpperCase()} Цена в USD`,
-                data: prices,
+                data: sampledPrices,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1
             },
@@ -71,7 +74,8 @@ function updateChart(prices, cryptoId) {
                 label: 'SMA 14 дней',
                 data: smaPoints,
                 borderColor: 'rgb(255, 206, 86)',
-                tension: 0.1
+                tension: 0.1,
+                pointRadius: 0 // Отключает точки на линии SMA
             }]
         },
         options: {
@@ -86,6 +90,8 @@ function updateChart(prices, cryptoId) {
         }
     });
 }
+
+
 
 
 function calculateEMA(prices, days) {

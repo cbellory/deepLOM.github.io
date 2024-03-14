@@ -10,6 +10,7 @@ body {
     /* Гарантируем, что фон занимает полную доступную высоту */
     background-attachment: fixed;
     background-size: cover;
+    color: var(--text-color);
 }
 
 /* Базовые темы */
@@ -74,8 +75,14 @@ body {
     transition: background-color 0.3s;
 }
 
-.crypto-button:hover {
-    background-color: var(--button-hover-background-color);
+.crypto-button {
+    padding: 10px 21px;
+    background-color: var(--button-background-color);
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 5px; /* Добавляем закругленные углы кнопкам */
 }
 
 .crypto-recommendations {
@@ -238,10 +245,10 @@ h3 {
     }
 
     .crypto-button, #cryptoInput {
-        width: 80%; /* Уменьшаем ширину кнопок и поля ввода */
+        width: 80%; /* Уменьшаем ширину кнопок и поля ввода до 80% */
         margin: 10px auto; /* Центрируем и добавляем вертикальный отступ */
-        padding: 10px 20px; /* Увеличиваем паддинг для кнопок */
-        border-radius: 20px; /* Добавляем закругленные углы кнопкам */
+        padding: 12px 24px; /* Увеличиваем паддинг для кнопок */
+        border-radius: 25px; /* Добавляем закругленные углы кнопкам */
     }
 
     .chart-container {
