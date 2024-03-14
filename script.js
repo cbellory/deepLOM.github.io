@@ -252,21 +252,24 @@ function displayMacdAndRsiCharts(macdData, rsiData, pricesDates) {
                     data: MACDLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
                     borderColor: 'blue',
                     borderWidth: 1,
-                    fill: false
+                    fill: false,
+                    pointRadius: 0 // Отключает точки на графике для линии MACD
                 },
                 {
                     label: 'Signal Line',
                     data: signalLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
                     borderColor: 'red',
                     borderWidth: 1,
-                    fill: false
+                    fill: false,
+                    pointRadius: 0 // Отключает точки на графике для сигнальной линии
                 },
                 {
                     label: 'Histogram',
                     data: histogram.map((value, index) => ({ x: pricesDates[index].x, y: value })),
                     borderColor: 'green',
                     borderWidth: 1,
-                    type: 'bar'
+                    type: 'bar',
+                    // Для гистограммы (тип 'bar') pointRadius не применяется, так как это столбчатая диаграмма
                 }
             ]
         },
@@ -284,38 +287,40 @@ function displayMacdAndRsiCharts(macdData, rsiData, pricesDates) {
             }
         }
     });
+    
 
     // Создание графика RSI
-    const rsiCtx = document.getElementById('rsiChartNew').getContext('2d');
-    rsiChart = new Chart(rsiCtx, {
-        type: 'line',
-        data: {
-            labels: pricesDates.map(date => date.x), // Метки времени для оси X
-            datasets: [{
-                label: 'RSI',
-                data: rsiData,
-                borderColor: 'purple',
-                borderWidth: 1,
-                fill: false
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: false
-                },
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day',
-                        displayFormats: {
-                            day: 'MMM dd'
-                        }
+const rsiCtx = document.getElementById('rsiChartNew').getContext('2d');
+rsiChart = new Chart(rsiCtx, {
+    type: 'line',
+    data: {
+        labels: pricesDates.map(date => date.x), // Метки времени для оси X
+        datasets: [{
+            label: 'RSI',
+            data: rsiData,
+            borderColor: 'purple',
+            borderWidth: 1,
+            fill: false,
+            pointRadius: 0 // Отключает точки на графике для RSI
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: false
+            },
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'day',
+                    displayFormats: {
+                        day: 'MMM dd'
                     }
                 }
             }
         }
-    });
+    }
+});
 }
 
 function toggleTheme() {
