@@ -208,20 +208,6 @@ function requestCrypto() {
     }
 }
 
-function updateClocks() {
-    const formatOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    // Нью-Йорк (UTC-4)
-    document.getElementById('timeNYC').innerText = 'Нью-Йорк: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'America/New_York'});
-    // Лондон (UTC+1)
-    document.getElementById('timeLondon').innerText = 'Лондон: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Europe/London'});
-    // Москва (UTC+3)
-    document.getElementById('timeKyiv').innerText = 'Киев: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Europe/Moscow'});
-    // Токио (UTC+9)
-    document.getElementById('timeTokyo').innerText = 'Токио: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Asia/Tokyo'});
-}
-
-setInterval(updateClocks, 1000);
-
 function setTheme(themeName) {
     localStorage.setItem('theme', themeName);
     document.body.className = themeName + '-theme';

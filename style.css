@@ -150,17 +150,14 @@ h3 {
 }
 
 /* Стилизация контейнера для графика */
-.chart-container,.macd-container,.rsi-container {
-    width: 100% !important; /* Задает ширину canvas равной ширине его контейнера */
-    height: 500px !important; /* Фиксированная высота для canvas */
-    background-color: transparent; /* Легкий фоновый цвет для canvas */
-}
-
-/* Стилизация самого элемента canvas */
-#rsiChartNew, #macdChartNew {
-    width: 100% !important; /* Задает ширину canvas равной ширине его контейнера */
-    height: 500px !important; /* Фиксированная высота для canvas */
-    background-color: transparent; /* Легкий фоновый цвет для canvas */
+.chart-container {
+    width: 100%; /* или любая другая ширина, которая вам нужна */
+    height: 600px; /* или любая другая высота, которая вам нужна */
+    margin: auto; /* Центрирует контейнер */
+    padding: 20px; /* Добавляет немного пространства вокруг графиков */
+    background-color: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый фон */
+    border-radius: 15px; /* Скругленные углы */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Легкая тень для добавления глубины */
 }
 
 /* Стилизация кнопок или других элементов управления графиком */
@@ -207,44 +204,37 @@ h3 {
 }
 
 @media (max-width: 900px) {
-    .sidebar {
-        display: none; /* Или можно преобразовать в выпадающее меню */
-    }
-
-    .container, .crypto-recommendations, .controls-container, .buttons-container, .input-container, .chart-container, .additional-charts-container {
-        width: 100%;
-        padding: 10px;
-    }
-
-    .crypto-button, #cryptoInput {
-        width: 90%;
-        margin: 5px 0; /* Для лучшего размещения на экране */
-    }
-
-    .chart-container canvas, .additional-charts-container canvas {
-        max-width: 100%;
-        height: auto;
-    }
-}
-
-@media (max-width: 900px) {
-    .sidebar, .timezones-container, .buttons-container, .input-container {
-        width: 100%;
-        text-align: center;
+    .sidebar, .timezones-container {
+        display: none; /* Скрываем боковую панель и контейнеры временных зон на маленьких экранах */
     }
 
     .main-wrapper {
-        flex-direction: column;
+        flex-direction: column; /* Элементы теперь будут расположены вертикально */
     }
 
-    .chart-container, .macd-container, .rsi-container {
-        width: 100%;
+    .container, .crypto-recommendations, .controls-container, .buttons-container, .input-container, .chart-container, .additional-charts-container {
+        width: 100%; /* Заставляет контейнеры занимать всю доступную ширину */
+        padding: 10px; /* Устанавливает одинаковое паддинг для всех элементов */
+        margin: 10px 0; /* Добавляет вертикальный отступ между контейнерами */
+    }
+
+    .crypto-button, #cryptoInput {
+        width: 100%; /* Кнопки и поле ввода занимают всю ширину контейнера */
+        margin: 5px 0; /* Добавляет вертикальный отступ между кнопками и полем ввода */
+    }
+
+    .chart-container {
+        height: 250px; /* Устанавливает фиксированную высоту для контейнеров графиков */
+        padding: 20px; /* Добавляет паддинг вокруг графиков */
+        background-color: rgba(255, 255, 255, 0.2); /* Устанавливает полупрозрачный фон */
+        border-radius: 15px; /* Добавляет скругленные углы */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Добавляет тень для лучшей визуализации */
+        margin: 10px 20px; /* Добавляет вертикальные отступы */
+    }
+
+    .chart-container canvas, canvas#cryptoChart, #macdChartNew canvas, #rsiChartNew {
+        width: calc(100% - 40px); /* Устанавливает ширину холста равной ширине контейнера */
+        height: auto; /* Высота холста подстраивается автоматически */
     }
 }
 
-@media (max-width: 900px) {
-    .chart-container, #cryptoChart, #macdChartNew, #rsiChartNew {
-        width: 100%; /* Полная ширина на малых экранах */
-        height: 250px; /* Более низкая высота для малых экранов */
-    }
-}
