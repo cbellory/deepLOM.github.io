@@ -1,6 +1,7 @@
 body, html {
     height: 100%;
     margin: 0;
+    padding: 0;
 }
 
 body {
@@ -9,30 +10,11 @@ body {
     /* Гарантируем, что фон занимает полную доступную высоту */
     background-attachment: fixed;
     background-size: cover;
+    color: var(--text-color);
 }
 
 /* Базовые темы */
 .light-theme {
-    --background-color: #e0e0e022; /* Светло-серый для фона, мягкий и спокойный */
-    --text-color: #333333; /* Темно-серый для текста, хороший контраст с фоном */
-    --container-background-color: #bc1616be; /* Очень светлый серый для контейнеров, чистый и яркий */
-    --button-background-color: #BDBDBD; /* Средний серый для кнопок, умеренный и профессиональный */
-    --button-hover-background-color: #9E9E9E; /* Темный серый для эффекта при наведении на кнопки */
-    --input-border-color: #CCCCCC; /* Светло-серый для границ ввода, ненавязчивый */
-    --timezone-background-color: #F5F5F5; /* Очень светлый серый для фонов временных зон, мягкий и нейтральный */
-}
-
-.dark-theme {
-    --background-color: #212121; /* Очень темный серый (почти черный) для фона, глубокий и интенсивный */
-    --text-color: #E0E0E0; /* Светло-серый для текста, отличный контраст с темным фоном */
-    --container-background-color: #424242; /* Темно-серый для контейнеров, добавляет глубину */
-    --button-background-color: #616161; /* Средне-серый для кнопок, сдержанный и элегантный */
-    --button-hover-background-color: #757575; /* Более темный серый для эффекта при наведении */
-    --input-border-color: #757575; /* Темный серый для границ ввода, отчетливый, но не резкий */
-    --timezone-background-color: #616161; /* Средне-серый для фонов временных зон, современный и сдержанный */
-}
-
-.neutral-theme {
     --background-color: #BDBDBD; /* Средний серый для фона, универсальный и современный */
     --text-color: #212121; /* Очень темный серый (почти черный) для текста, высокий контраст */
     --container-background-color: #E0E0E0; /* Светло-серый для контейнеров, создает ощущение пространства */
@@ -40,6 +22,26 @@ body {
     --button-hover-background-color: #707070; /* Еще более темный серый для эффекта при наведении */
     --input-border-color: #A4A4A4; /* Серый для границ ввода, четкий и эстетичный */
     --timezone-background-color: #C2C2C2; /* Светлый серый для фонов временных зон, спокойный и нейтральный */
+}
+
+.dark-theme {
+    --background-color: #2a2a2a; /* Очень темный серый (почти черный) для фона, глубокий и интенсивный */
+    --text-color: #cfcfcf; /* Светло-серый для текста, отличный контраст с темным фоном */
+    --container-background-color: #666161c0; /* Темно-серый для контейнеров, добавляет глубину */
+    --button-background-color: #616161; /* Средне-серый для кнопок, сдержанный и элегантный */
+    --button-hover-background-color: #757575; /* Более темный серый для эффекта при наведении */
+    --input-border-color: #757575; /* Темный серый для границ ввода, отчетливый, но не резкий */
+    --timezone-background-color: #616161; /* Средне-серый для фонов временных зон, современный и сдержанный */
+}
+
+.neutral-theme {
+    --background-color: #e0e0e022; /* Светло-серый для фона, мягкий и спокойный */
+    --text-color: #333333; /* Темно-серый для текста, хороший контраст с фоном */
+    --container-background-color: #e2d8d890; /* Очень светлый серый для контейнеров, чистый и яркий */
+    --button-background-color: #BDBDBD; /* Средний серый для кнопок, умеренный и профессиональный */
+    --button-hover-background-color: #9E9E9E; /* Темный серый для эффекта при наведении на кнопки */
+    --input-border-color: #CCCCCC; /* Светло-серый для границ ввода, ненавязчивый */
+    --timezone-background-color: #F5F5F5; /* Очень светлый серый для фонов временных зон, мягкий и нейтральный */
 }
 
 body {
@@ -51,8 +53,9 @@ body {
     max-width: 100%;
     margin: 20px auto;
     padding: 20px;
-    /* background-color: var(--container-background-color); */
-    max-height: 2000px;
+    background-color: var(--container-background-color);
+    max-height: auto;
+    border-radius: 20px;
 }
 
 
@@ -72,14 +75,28 @@ body {
     transition: background-color 0.3s;
 }
 
-.crypto-button:hover {
-    background-color: var(--button-hover-background-color);
+.crypto-button {
+    padding: 10px 21px;
+    background-color: var(--button-background-color);
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 5px; /* Добавляем закругленные углы кнопкам */
 }
 
 .crypto-recommendations {
     text-align: center;
     font-size: 18px;
     color: var(--text-color);
+}
+
+.macd-title {
+    font-size: 20px; /* Устанавливает размер шрифта только для заголовков с классом macd-title */
+}
+
+.rsi-title {
+    font-size: 20px; /* Устанавливает размер шрифта только для заголовков с классом macd-title */
 }
 
 .input-container input {
@@ -106,25 +123,8 @@ body {
 
 .main-wrapper {
     display: flex;
-    justify-content: flex-start; /* Располагаем дочерние элементы в начале контейнера */
-    align-items: flex-start; /* Дочерние элементы выравниваются по верхнему краю */
-}
-
-.timezones-container {
-    padding: 10px;
-    margin-right: 20px; /* Отступ справа, чтобы отделить от основного контента */
-    margin-left: 10px; /* Отступ слева от левой части сайта */
-    background-color: var(--timezone-background-color);
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    display: inline-flex;
     flex-direction: column;
-    align-items: flex-start; /* Выравниваем элементы по началу контейнера */
-}
-
-.timezone {
-    margin-bottom: 10px; /* Добавляем небольшой отступ между зонами */
-    /* Дополнительные стили для .timezone */
+    min-height: 100vh; /* Минимальная высота всей видимой области */
 }
 
 .main-content {
@@ -151,13 +151,31 @@ h3 {
 
 /* Стилизация контейнера для графика */
 .chart-container {
-    width: 100%; /* или любая другая ширина, которая вам нужна */
-    height: 600px; /* или любая другая высота, которая вам нужна */
+    width: 850px; /* или любая другая ширина, которая вам нужна */
+    height: 250px; /* или любая другая высота, которая вам нужна */
     margin: auto; /* Центрирует контейнер */
     padding: 20px; /* Добавляет немного пространства вокруг графиков */
     background-color: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый фон */
     border-radius: 15px; /* Скругленные углы */
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Легкая тень для добавления глубины */
+}
+
+.chart-container {
+    height: auto; /* Делает высоту контейнера автоматической для улучшения скейлинга */
+    padding: 20px; /* Добавляет паддинг вокруг графиков */
+    background-color: rgba(255, 255, 255, 0.2); /* Устанавливает полупрозрачный фон */
+    border-radius: 15px; /* Добавляет скругленные углы */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Добавляет тень для лучшей визуализации */
+    margin: 10px 20px; /* Добавляет верхние и нижние отступы, а также сохраняет отступы по бокам */
+}
+
+.chart-container canvas {
+    width: 100%; /* Устанавливает ширину холста равной ширине контейнера */
+    height: auto; /* Высота холста подстраивается автоматически, сохраняя аспект */
+}
+
+#cryptoChart, #macdChartNew, #rsiChartNew {
+    height: 250px; /* Устанавливает фиксированную высоту для холстов графиков */
 }
 
 /* Стилизация кнопок или других элементов управления графиком */
@@ -210,36 +228,67 @@ h3 {
 
     .main-wrapper {
         flex-direction: column; /* Элементы теперь будут расположены вертикально */
+        padding: 0;
     }
 
-    .container, .crypto-recommendations, .controls-container, .buttons-container, .input-container, .chart-container, .additional-charts-container {
-        width: 100%; /* Заставляет контейнеры занимать всю доступную ширину */
-        padding: 10px; /* Устанавливает одинаковое паддинг для всех элементов */
-        margin: 10px 0; /* Добавляет вертикальный отступ между контейнерами */
+    .container {
+        width: calc(100% - 20px); /* Контейнер занимает ширину с учетом паддинга */
+        margin: -12px; /* Центрируем контейнер и добавляем отступ */
+        padding: 20px; /* Добавляем внутренние отступы контейнера */
+        border-radius: 10px; /* Добавляем закругленные углы контейнеру */
+        box-shadow: none; /* Убираем тень с контейнера */
+        overflow: hidden; /* Скрываем содержимое, выходящее за пределы контейнера */
     }
 
-    .crypto-button, #cryptoInput {
-        width: 90%; /* Кнопки и поле ввода занимают большую часть ширины контейнера, но оставляют небольшой отступ */
-        margin: 5px auto; /* Центрирует элементы и добавляет вертикальный отступ */
+    .buttons-container {
+        gap: 0; /* Убираем промежуток между кнопками */
+        flex-wrap: wrap; /* Добавляем возможность переноса кнопок на новую строку */
+        justify-content: space-around; /* Распределяем кнопки равномерно в контейнере */
+    }
+
+    .input-container input {
+        width: 80%; /* Уменьшаем ширину строки поиска */
+        margin: 10px auto; /* Центрируем строку поиска и добавляем вертикальный отступ */
+        padding: 10px; /* Можно настроить паддинг для лучшей визуализации и комфорта при вводе */
+    }
+    
+    .crypto-button {
+        width: calc(50% - 10px); /* Установка ширины кнопок, учитывая отступы */
+        margin: 5px 5px; /* Небольшой вертикальный отступ для каждой кнопки */
+    }
+
+    .controls-container, .input-container {
+        flex-direction: column; /* Элементы управления будут располагаться вертикально */
+    }
+
+    #cryptoInput {
+        width: 80%; /* Уменьшаем ширину кнопок и поля ввода до 80% */
+        margin: 10px auto; /* Центрируем и добавляем вертикальный отступ */
+        padding: 12px 24px; /* Увеличиваем паддинг для кнопок */
+        border-radius: 25px; /* Добавляем закругленные углы кнопкам */
     }
 
     .chart-container {
-        height: auto; /* Делает высоту контейнера автоматической для улучшения скейлинга */
-        padding: 20px; /* Добавляет паддинг вокруг графиков */
-        background-color: rgba(255, 255, 255, 0.2); /* Устанавливает полупрозрачный фон */
-        border-radius: 15px; /* Добавляет скругленные углы */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Добавляет тень для лучшей визуализации */
-        margin: 10px 20px; /* Добавляет верхние и нижние отступы, а также сохраняет отступы по бокам */
+        width: calc(100% - 40px); /* Уменьшаем ширину контейнера графиков для учета паддинга */
+        margin: 11px auto; /* Центрируем и добавляем отступы вокруг контейнера графиков */
+        padding: 20px; /* Добавляем внутренние отступы контейнера графиков */
+        background-color: var(--container-background-color); /* Используем цвет фона из темы */
+        border-radius: 15px; /* Добавляем скругленные углы контейнера графиков */
     }
 
     .chart-container canvas {
-        width: 100%; /* Устанавливает ширину холста равной ширине контейнера */
-        height: auto; /* Высота холста подстраивается автоматически, сохраняя аспект */
+        width: 100%; /* Канвас графика занимает всю ширину контейнера */
     }
 
     #cryptoChart, #macdChartNew, #rsiChartNew {
-        height: 250px; /* Устанавливает фиксированную высоту для холстов графиков */
+        margin-bottom: 20px; /* Добавляем нижний отступ для канвасов графиков */
+    }
+
+    .macd-title, .rsi-title {
+        font-size: 16px; /* Уменьшаем размер шрифта для заголовков на мобильных устройствах */
     }
 }
+
+
 
 
