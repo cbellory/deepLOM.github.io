@@ -228,54 +228,56 @@ function displayMacdAndRsiCharts(macdData, rsiData, pricesDates) {
     const { MACDLine, signalLine, histogram } = macdData;
 
     // Создание графика MACD
-    const macdCtx = document.getElementById('macdChartNew').getContext('2d');
-    macdChart = new Chart(macdCtx, {
-        type: 'line',
-        data: {
-            datasets: [
-                {
-                    label: 'MACD Line',
-                    data: MACDLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
-                    borderColor: 'blue',
-                    borderWidth: 1,
-                    fill: false,
-                    pointRadius: 0 // Отключает точки на графике для линии MACD
-                },
-                {
-                    label: 'Signal Line',
-                    data: signalLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
-                    borderColor: 'red',
-                    borderWidth: 1,
-                    fill: false,
-                    pointRadius: 0 // Отключает точки на графике для сигнальной линии
-                },
-                {
-                    label: 'Histogram',
-                    data: histogram.map((value, index) => ({ x: pricesDates[index].x, y: value })),
-                    borderColor: 'green',
-                    borderWidth: 1,
-                    type: 'bar',
-                    // Для гистограммы (тип 'bar') pointRadius не применяется, так как это столбчатая диаграмма
-                }
-            ]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: false
-                },
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day' // Можно установить нужный формат времени
+const macdCtx = document.getElementById('macdChartNew').getContext('2d');
+macdChart = new Chart(macdCtx, {
+    type: 'line',
+    data: {
+        datasets: [
+            {
+                label: 'MACD Line',
+                data: MACDLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
+                borderColor: 'rgb(50, 50, 255)', // Сделать цвет линии, как у графика цены
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 0
+            },
+            {
+                label: 'Signal Line',
+                data: signalLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
+                borderColor: 'rgb(255, 86, 86)', // Изменен для соответствия цвету SMA
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 0
+            },
+            {
+                label: 'Histogram',
+                data: histogram.map((value, index) => ({ x: pricesDates[index].x, y: value })),
+                borderColor: 'green', // Зеленый для гистограммы
+                backgroundColor: 'rgba(0, 250, 0, 0.5)', // Легкая зеленая заливка для гистограммы
+                borderWidth: 1,
+                type: 'bar'
+            }
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: false
+            },
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'day',
+                    displayFormats: {
+                        day: 'MMM dd'
                     }
                 }
             }
         }
-    });
-    
+    }
+});
 
-    // Создание графика RSI
+// Создание графика RSI
 const rsiCtx = document.getElementById('rsiChartNew').getContext('2d');
 rsiChart = new Chart(rsiCtx, {
     type: 'line',
@@ -304,9 +306,62 @@ rsiChart = new Chart(rsiCtx, {
                     }
                 }
             }
+        },
+        plugins: {
+            annotation: {
+                annotations: {
+                    line70: {
+                        type: 'line',
+                        yMin: 70,
+                        yMax: 70,
+                        borderColor: 'rgb(191, 48, 48)',
+                        borderWidth: 3,
+                        xMin: pricesDates[0].x, // Начальная дата для линии
+                        xMax: pricesDates[pricesDates.length - 1].x, // Конечная дата для линии
+                        label: {
+                            enabled: true,
+                            content: 'Overbought',
+                            position: 'start',
+                            xAdjust: +1,
+                            yAdjust: -20,
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            color: 'rgb(255, 99, 132)',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    line30: {
+                        type: 'line',
+                        yMin: 30,
+                        yMax: 30,
+                        borderColor: 'rgb(46, 138, 33)',
+                        borderWidth: 3,
+                        xMin: pricesDates[0].x, // Начальная дата для линии
+                        xMax: pricesDates[pricesDates.length - 1].x, // Конечная дата для линии
+                        label: {
+                            enabled: true,
+                            content: 'Oversold',
+                            position: 'start',
+                            xAdjust: +1,
+                            yAdjust: -20,
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            color: 'rgb(75, 192, 192)',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            }
         }
+        
+        
+        
     }
 });
+
+
 }
 
 function toggleTheme() {
