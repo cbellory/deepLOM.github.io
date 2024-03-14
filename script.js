@@ -356,8 +356,6 @@ rsiChart = new Chart(rsiCtx, {
             }
         }
         
-        
-        
     }
 });
 
