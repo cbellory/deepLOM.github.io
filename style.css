@@ -5,7 +5,7 @@ body, html {
 
 body {
     /* Установка сдержанного градиентного фона от темно-серого к мягкому фиолетовому и темно-красному */
-    background: linear-gradient(135deg, #7e7eff, #cb474782, #5278ff82, #43217581);
+    background: linear-gradient(135deg, #FFB6B9 10%, #FDE2E4 30%, #AACBEA 60%, #679BFF 90%);
     /* Гарантируем, что фон занимает полную доступную высоту */
     background-attachment: fixed;
     background-size: cover;
@@ -13,9 +13,9 @@ body {
 
 /* Базовые темы */
 .light-theme {
-    --background-color: #e0e0e0ab; /* Светло-серый для фона, мягкий и спокойный */
+    --background-color: #e0e0e022; /* Светло-серый для фона, мягкий и спокойный */
     --text-color: #333333; /* Темно-серый для текста, хороший контраст с фоном */
-    --container-background-color: #fafafabe; /* Очень светлый серый для контейнеров, чистый и яркий */
+    --container-background-color: #bc1616be; /* Очень светлый серый для контейнеров, чистый и яркий */
     --button-background-color: #BDBDBD; /* Средний серый для кнопок, умеренный и профессиональный */
     --button-hover-background-color: #9E9E9E; /* Темный серый для эффекта при наведении на кнопки */
     --input-border-color: #CCCCCC; /* Светло-серый для границ ввода, ненавязчивый */

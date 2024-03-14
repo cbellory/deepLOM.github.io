@@ -1,6 +1,8 @@
 // Определение глобальных переменных
 let cryptoChart; // для хранения графика
 const apiUrl = 'https://api.coingecko.com/api/v3/coins/'; // Обновленный базовый URL API CoinGecko для получения исторических данных
+let macdChart;
+let rsiChart;
 
 // Функция для изменения отображаемой криптовалюты
 async function changeCrypto(cryptoId) {
@@ -19,14 +21,19 @@ async function changeCrypto(cryptoId) {
 
         // Предположим, что у вас есть функции для вычисления данных для MACD и RSI
         const closingPrices = prices.map(price => price.y); // Извлекаем цены закрытия для расчетов
+        const pricesDates = prices.map(price => price.x);
+        
+        
         const macdData = calculateMACD(closingPrices); // Вычисляем данные для MACD
         const rsiData = calculateRSI(closingPrices); // Вычисляем данные для RSI
 
-        // Обновляем графики MACD и RSI
-        displayMacdAndRsiCharts(macdData, rsiData); // Вызываем функцию для отображения графиков
+        macdChart?.destroy?.()
+        rsiChart?.destroy?.()
 
-        console.log("MACD Data being passed to MACD chart:", macdData);
-        console.log("RSI Data being passed to RSI chart:", rsiData);
+        /
+        displayMacdAndRsiCharts(macdData, rsiData, prices); // Вызываем функцию для отображения графиков
+
+        
 
     } else {
         console.error('Ошибка при получении данных');
@@ -37,15 +44,17 @@ async function changeCrypto(cryptoId) {
 function updateChart(prices, cryptoId) {
     const priceValues = prices.map(price => price.y);
     const pricedays = prices.map(price => price.x);
-    console.log(Pricedays);
-    const smaValues = calculateSMA(priceValues, 14); // Вы можете изменить период
+    
+    const smaValues = calculateSMA(priceValues, 14); 
+    
     const smaPoints = prices.slice(14 - 1).map((price, index) => ({
         x: price.x,
         y: smaValues[index]
     }));
-
+    console.log(smaPoints);
+    
     if (cryptoChart) {
-        cryptoChart.destroy(); // Уничтожаем предыдущий график, если он существует
+        cryptoChart.destroy(); 
     }
 
     const ctx = document.getElementById('cryptoChart').getContext('2d');
@@ -78,10 +87,10 @@ function updateChart(prices, cryptoId) {
     });
 }
 
-// Функция для расчета EMA
+
 function calculateEMA(prices, days) {
-    const k = 2 / (days + 1); // Весовой коэффициент
-    let emaArray = [prices[0]]; // Начинаем массив EMA с первого значения цены
+    const k = 2 / (days + 1); 
+    let emaArray = [prices[0]]; 
 
     for (let i = 1; i < prices.length; i++) {
         emaArray[i] = prices[i] * k + emaArray[i - 1] * (1 - k);
@@ -140,9 +149,7 @@ function calculateRSI(prices, period = 14) {
         }
     }
 
-    console.log("Average gains:", averageGain);
-    console.log("Average losses:", averageLoss);
-    console.log("RSI array:", rsiArray);
+   
 
     return rsiArray;
 }
@@ -166,8 +173,8 @@ function updateRecommendations(prices) {
 
     // Расчет индикаторов
     const { MACDLine, signalLine } = calculateMACD(closingPrices);
-    const lastMACD = MACDLine[MACDLine.length - 1];
-    const lastSignal = signalLine[signalLine.length - 1];
+    const lastMACD = MACDLine.slice(-1);
+    const lastSignal = signalLine.slice(-1);
     const rsi = calculateRSI(closingPrices);
 
     // Генерация торговых сигналов на основе MACD
@@ -210,7 +217,7 @@ function updateClocks() {
     // Лондон (UTC+1)
     document.getElementById('timeLondon').innerText = 'Лондон: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Europe/London'});
     // Москва (UTC+3)
-    document.getElementById('timeMoscow').innerText = 'Москва: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Europe/Moscow'});
+    document.getElementById('timeKyiv').innerText = 'Киев: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Europe/Moscow'});
     // Токио (UTC+9)
     document.getElementById('timeTokyo').innerText = 'Токио: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Asia/Tokyo'});
 }
@@ -232,34 +239,33 @@ function loadTheme() {
 window.onload = loadTheme;
 
 
-function displayMacdAndRsiCharts(macdData, rsiData) {
+function displayMacdAndRsiCharts(macdData, rsiData, pricesDates) {
     // Деструктуризация данных MACD
     const { MACDLine, signalLine, histogram } = macdData;
 
     // Создание графика MACD
     const macdCtx = document.getElementById('macdChartNew').getContext('2d');
-    const macdChart = new Chart(macdCtx, {
+    macdChart = new Chart(macdCtx, {
         type: 'line',
         data: {
-            labels: MACDLine.map((_, index) => index), // Просто используем индекс в качестве меток времени
             datasets: [
                 {
                     label: 'MACD Line',
-                    data: MACDLine,
+                    data: MACDLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
                     borderColor: 'blue',
                     borderWidth: 1,
                     fill: false
                 },
                 {
                     label: 'Signal Line',
-                    data: signalLine,
+                    data: signalLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
                     borderColor: 'red',
                     borderWidth: 1,
                     fill: false
                 },
                 {
                     label: 'Histogram',
-                    data: histogram,
+                    data: histogram.map((value, index) => ({ x: pricesDates[index].x, y: value })),
                     borderColor: 'green',
                     borderWidth: 1,
                     type: 'bar'
@@ -270,6 +276,12 @@ function displayMacdAndRsiCharts(macdData, rsiData) {
             scales: {
                 y: {
                     beginAtZero: false
+                },
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day' // Можно установить нужный формат времени
+                    }
                 }
             }
         }
@@ -277,10 +289,10 @@ function displayMacdAndRsiCharts(macdData, rsiData) {
 
     // Создание графика RSI
     const rsiCtx = document.getElementById('rsiChartNew').getContext('2d');
-    const rsiChart = new Chart(rsiCtx, {
+    rsiChart = new Chart(rsiCtx, {
         type: 'line',
         data: {
-            labels: rsiData.map((_, index) => index), // Аналогично, используем индекс в качестве меток времени
+            labels: pricesDates.map(date => date.x), // Метки времени для оси X
             datasets: [{
                 label: 'RSI',
                 data: rsiData,
@@ -292,20 +304,66 @@ function displayMacdAndRsiCharts(macdData, rsiData) {
         options: {
             scales: {
                 y: {
-                    min: 0,
-                    max: 100,
-                    afterBuildTicks: (axis) => {
-                        // Явно устанавливаем пользовательские тики
-                        axis.ticks = [
-                            ...axis.ticks, // Копируем существующие тики, если они есть
-                            {value: 30, label: 'Перепроданность'},
-                            {value: 70, label: 'Перекупленность'}
-                        ];
+                    beginAtZero: false
+                },
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM dd'
+                        }
                     }
                 }
             }
         }
-        
     });
 }
 
+function toggleTheme() {
+    let currentTheme = localStorage.getItem('theme') || 'light';
+    let newTheme;
+
+    if (currentTheme === 'light') {
+        newTheme = 'dark';
+    } else if (currentTheme === 'dark') {
+        newTheme = 'neutral';
+    } else {
+        newTheme = 'light';
+    }
+
+    localStorage.setItem('theme', newTheme);
+    document.body.className = `${newTheme}-theme`;
+    updateThemeIcon(newTheme); // Обновляем иконку в соответствии с новой темой
+}
+
+function updateThemeIcon(theme) {
+    const themeIcon = document.getElementById('theme-icon');
+    // Предположим, что у вас есть разные файлы изображений для каждой темы
+    switch (theme) {
+        case 'light':
+            themeIcon.src = 'icons/icon1.png'; // Установите путь к вашему изображению для светлой темы
+            break;
+        case 'dark':
+            themeIcon.src = 'icons/icon2.png'; // Установите путь к вашему изображению для темной темы
+            break;
+        case 'neutral':
+            themeIcon.src = 'icons/icon3.png'; // Установите путь к вашему изображению для нейтральной темы
+            break;
+        default:
+            themeIcon.src = 'icons/icon1.png'; // Фолбек на светлую тему
+    }
+}
+
+// Объект с SVG иконками для каждой темы
+const themeIcons = {
+    light: '<svg>...</svg>', // SVG для светлой темы
+    dark: '<svg>...</svg>', // SVG для темной темы
+    neutral: '<svg>...</svg>' // SVG для нейтральной темы
+};
+
+// Устанавливаем иконку в соответствии с сохраненной темой при загрузке страницы
+window.onload = function() {
+    loadTheme();
+    updateThemeIcon(localStorage.getItem('theme') || 'light');
+};

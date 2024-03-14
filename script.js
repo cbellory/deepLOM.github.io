@@ -149,8 +149,6 @@ function calculateRSI(prices, period = 14) {
         }
     }
 
-   
-
     return rsiArray;
 }
 
@@ -321,18 +319,17 @@ function displayMacdAndRsiCharts(macdData, rsiData, pricesDates) {
 }
 
 function toggleTheme() {
-    let currentTheme = localStorage.getItem('theme') || 'light';
-    let newTheme;
+    const bodyClass = document.body.className;
 
-    if (currentTheme === 'light') {
+    let newTheme;
+    if (bodyClass.includes('light-theme')) {
         newTheme = 'dark';
-    } else if (currentTheme === 'dark') {
+    } else if (bodyClass.includes('dark-theme')) {
         newTheme = 'neutral';
     } else {
         newTheme = 'light';
     }
 
-    localStorage.setItem('theme', newTheme);
     document.body.className = `${newTheme}-theme`;
     updateThemeIcon(newTheme); // Обновляем иконку в соответствии с новой темой
 }
@@ -342,28 +339,23 @@ function updateThemeIcon(theme) {
     // Предположим, что у вас есть разные файлы изображений для каждой темы
     switch (theme) {
         case 'light':
-            themeIcon.src = 'icons/icon1.png'; // Установите путь к вашему изображению для светлой темы
+            themeIcon.src = 'icons/icon1.png'; // Путь к вашему изображению для светлой темы
             break;
         case 'dark':
-            themeIcon.src = 'icons/icon2.png'; // Установите путь к вашему изображению для темной темы
+            themeIcon.src = 'icons/icon2.png'; // Путь к вашему изображению для темной темы
             break;
         case 'neutral':
-            themeIcon.src = 'icons/icon3.png'; // Установите путь к вашему изображению для нейтральной темы
+            themeIcon.src = 'icons/icon3.png'; // Путь к вашему изображению для нейтральной темы
             break;
         default:
             themeIcon.src = 'icons/icon1.png'; // Фолбек на светлую тему
     }
 }
 
-// Объект с SVG иконками для каждой темы
-const themeIcons = {
-    light: '<svg>...</svg>', // SVG для светлой темы
-    dark: '<svg>...</svg>', // SVG для темной темы
-    neutral: '<svg>...</svg>' // SVG для нейтральной темы
+// Устанавливаем класс темы для body в соответствии с сохраненной темой при загрузке страницы
+window.onload = function() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.className = `${savedTheme}-theme`;
+    updateThemeIcon(savedTheme);
 };
 
-// Устанавливаем иконку в соответствии с сохраненной темой при загрузке страницы
-window.onload = function() {
-    loadTheme();
-    updateThemeIcon(localStorage.getItem('theme') || 'light');
-};
