@@ -233,7 +233,7 @@ h3 {
         overflow: hidden; /* Скрываем содержимое, выходящее за пределы контейнера */
     }
 
-    .controls-container,.buttons-container, .input-container {
+    .controls-container, .input-container {
         flex-direction: column; /* Элементы управления будут располагаться вертикально */
     }
 
