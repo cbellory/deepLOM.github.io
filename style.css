@@ -71,10 +71,9 @@ body {
     padding: 20px;
     background-color: var(--container-background-color);
     border-radius: 20px;
-    transition: max-height 2s ease-in-out, opacity 2s ease; /* Обновленная анимация */
     overflow: hidden;
-    opacity: 1; /* Контейнер полностью видим с самого начала */
-    max-height: 200px; /* Начальная максимальная высота, достаточно большая, чтобы вместить начальное содержимое */
+    opacity: 1;
+    max-height: none; /* Изменено для удаления анимации */
 }
 
 .container-expanding {
@@ -182,7 +181,6 @@ h3 {
     background-color: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый фон */
     border-radius: 15px; /* Скругленные углы */
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Легкая тень для добавления глубины */
-    transition: background-color 0.5s ease; /* Плавная анимация при смене фона */
 }
 
 .chart-container canvas {
@@ -333,6 +331,7 @@ h3 {
         padding: 20px; /* Добавляем внутренние отступы контейнера графиков */
         background-color: var(--container-background-color); /* Используем цвет фона из темы */
         border-radius: 0px; /* Добавляем скругленные углы контейнера графиков */
+        box-shadow: 0px 0px 0px rgba(0, 0, 0, 0); /* Легкая тень для добавления глубины */
     }
 
     .chart-container canvas {
