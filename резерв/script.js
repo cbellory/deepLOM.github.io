@@ -113,7 +113,7 @@ function calculateMACD(prices) {
 
     const shortEMA = calculateEMA(prices, shortPeriod);
     const longEMA = calculateEMA(prices, longPeriod);
-    const MACDLine = shortEMA.map((value, index) => value - longEMA[index]);
+    const MACDLineMACDLine = shortEMA.map((value, index) => value - longEMA[index]);
     const signalLine = calculateEMA(MACDLine, signalPeriod);
     const histogram = MACDLine.map((value, index) => value - signalLine[index]);
 
