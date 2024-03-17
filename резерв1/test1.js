@@ -319,3 +319,25 @@ function updateChart(prices, cryptoId) {
         }
     });
 }
+
+
+.chart-container {
+    width: calc(100% - 40px); /* Уменьшаем ширину контейнера графиков для учета паддинга */
+    margin: 11px auto; /* Центрируем и добавляем отступы вокруг контейнера графиков */
+    padding: 20px; /* Добавляем внутренние отступы контейнера графиков */
+    background-color: var(--container-background-color); /* Используем цвет фона из темы */
+    border-radius: 0px; /* Добавляем скругленные углы контейнера графиков */
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0); /* Легкая тень для добавления глубины */
+}
+
+.chart-container canvas {
+    width: 100%; /* Канвас графика занимает всю ширину контейнера */
+}
+
+#cryptoChart, #macdChartNew, #rsiChartNew {
+    margin-bottom: 20px; /* Добавляем нижний отступ для канвасов графиков */
+}
+
+.macd-title, .rsi-title {
+    font-size: 16px; /* Уменьшаем размер шрифта для заголовков на мобильных устройствах */
+}
