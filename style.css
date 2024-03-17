@@ -229,41 +229,38 @@ h3 {
     .main-wrapper {
         flex-direction: column; /* Элементы теперь будут расположены вертикально */
         padding: 0;
+        border-radius: 0%;
     }
 
+    .input-container button {
+        padding: 0; /* Может быть изменено, если кнопка содержит текст или иконку */
+        width: 40px; /* Ширина кнопки */
+        height: 40px; /* Высота кнопки, делает ее квадратной */
+        border-radius: 50%; /* Делает кнопку круглой */
+        margin-left: -10px; /* Перекрывает правый край поисковой строки для симметрии */
+    }
+    
     .container {
-        width: calc 100%; /* Контейнер занимает ширину с учетом паддинга */
-        margin: 0px; /* Центрируем контейнер и добавляем отступ */
-        padding: 20px; /* Добавляем внутренние отступы контейнера */
-        border-radius: 0px; /* Добавляем закругленные углы контейнеру */
-        box-shadow: none; /* Убираем тень с контейнера */
-        overflow: hidden; /* Скрываем содержимое, выходящее за пределы контейнера */
+        width: 100%; /* Контейнер теперь занимает всю доступную ширину */
+        margin: 0 auto; /* Убираем отрицательные отступы и центрируем контейнер */
+        padding: 10px 10px 10px 10px; /* Устанавливаем одинаковые внутренние отступы со всех сторон */
+        border-radius: 10px; /* Подтверждаем закругленные углы контейнера */
+        box-shadow: none; /* Подтверждаем отсутствие тени с контейнера */
+        overflow: hidden; /* Подтверждаем скрытие содержимого, выходящего за пределы контейнера */
+        border-radius: 0%;
         padding-left: 0px;
         padding-right: 0px;
     }
-
+    
     .buttons-container {
         gap: 0; /* Убираем промежуток между кнопками */
         flex-wrap: wrap; /* Добавляем возможность переноса кнопок на новую строку */
         justify-content: space-around; /* Распределяем кнопки равномерно в контейнере */
     }
 
-    .input-container input {
-        padding: 10px;
-        width: 300px;
-        border: 1px solid var(--input-border-color);
-        border-radius: 5px;
-        color: var(--text-color);
-        background-color: var(--background-color);
-    }
-    
-    .input-container button {
-        padding: 10px 20px;
-        border: none;
-        background-color: #00ff006b; /* Зеленый цвет */
-        color: var(--text-color);
-        cursor: pointer;
-        border-radius: 5px;
+    .input-container {
+        margin: 20px auto; /* Центрируем контейнер ввода */
+        padding: 10px; /* Уменьшаем паддинг */
     }
     
     .crypto-button {
@@ -271,11 +268,26 @@ h3 {
         margin: 5px 5px; /* Небольшой вертикальный отступ для каждой кнопки */
     }
 
+    .controls-container {
+        flex-direction: column; /* Элементы управления будут располагаться вертикально */
+    }
+
+    .input-container {
+        display: flex;
+        align-items: center; /* Это гарантирует, что элементы в контейнере выровнены по центру по вертикали */
+        justify-content: space-between; /* Это устанавливает распределение пространства между элементами */
+    }
+
     #cryptoInput {
-        width: 80%; /* Уменьшаем ширину кнопок и поля ввода до 80% */
-        margin: 10px auto; /* Центрируем и добавляем вертикальный отступ */
-        padding: 12px 24px; /* Увеличиваем паддинг для кнопок */
-        border-radius: 25px; /* Добавляем закругленные углы кнопкам */
+        flex-grow: 1; /* Заставляет поле ввода занимать все доступное пространство */
+        margin-right: 10px; /* Добавляет небольшой отступ справа, чтобы было пространство между полем ввода и кнопкой */
+        padding: 12px 24px; /* Увеличивает внутренний отступ */
+        border-radius: 25px 0 0 25px; /* Закругляет только левые углы */
+    }
+
+    #cryptoInput, .input-container button {
+        margin: 0; /* Убираем верхний и нижний маржин */
+        padding: 12px; /* Можно отрегулировать паддинг по необходимости */
     }
 
     .chart-container {
@@ -284,7 +296,7 @@ h3 {
         padding: 20px; /* Добавляем внутренние отступы контейнера графиков */
         background-color: var(--container-background-color); /* Используем цвет фона из темы */
         border-radius: 0px; /* Добавляем скругленные углы контейнера графиков */
-        box-shadow: 0px 0px 0px rgba(0, 0, 0, 0); /* Легкая тень для добавления глубины */
+        box-shadow: none
     }
 
     .chart-container canvas {
@@ -292,7 +304,7 @@ h3 {
     }
 
     #cryptoChart, #macdChartNew, #rsiChartNew {
-        margin-bottom: 20px; /* Добавляем нижний отступ для канвасов графиков */
+        margin-bottom: 10px; /* Добавляем нижний отступ для канвасов графиков */
     }
 
     .macd-title, .rsi-title {
