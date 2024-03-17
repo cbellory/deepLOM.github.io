@@ -4,7 +4,8 @@ const apiUrl = 'https://api.coingecko.com/api/v3/coins/'; // Обновленн�
 let macdChart;
 let rsiChart;
 
-
+let balance = 100000
+let btcbalance = 0
 
 const style = getComputedStyle(document.documentElement);
 const chartTextColor = style.getPropertyValue('--chart-text-color').trim();
@@ -176,141 +177,32 @@ function calculateSMA(prices, period) {
     return sma;
 }
 
-// Инициализация баланса и восстановление из localStorage
-let balance = parseFloat(localStorage.getItem('usdBalance')) || 100000;
-let btcbalance = parseFloat(localStorage.getItem('btcBalance')) || 0;
-
-// Функция для обновления баланса на странице
-let transactionLog = []; // Лог транзакций для хранения действий пользователя
-
-
-// Функция для обновления баланса на странице и в localStorage
-function updateBalances() {
-    // Заранее объявляем переменные для старых значений балансов
-    const oldUsdBalance = balance;
-    const oldBtcBalance = btcbalance;
-
-    // Ввод новых значений пользователя
-    const newUsdBalanceInput = document.getElementById('newUsdBalance');
-    const newBtcBalanceInput = document.getElementById('newBtcBalance');
-
-    const newUsdBalance = newUsdBalanceInput ? newUsdBalanceInput.value : null;
-    const newBtcBalance = newBtcBalanceInput ? newBtcBalanceInput.value : null;
-
-    // Проверка на корректность введенных значений и на положительные значения
-    if (newUsdBalance !== null && newBtcBalance !== null && !isNaN(parseFloat(newUsdBalance)) && !isNaN(parseFloat(newBtcBalance)) && parseFloat(newUsdBalance) >= 0 && parseFloat(newBtcBalance) >= 0) {
-        balance = parseFloat(newUsdBalance);
-        btcbalance = parseFloat(newBtcBalance);
-        
-        // Логирование изменений баланса
-        logTransaction(oldUsdBalance, oldBtcBalance, balance, btcbalance);
-    }
-
-    // Обновление отображаемых значений
-    document.getElementById('usdBalance').textContent = balance.toFixed(2);
-    document.getElementById('btcBalance').textContent = btcbalance.toFixed(8);
-    
-    // Сохранение в localStorage
-    localStorage.setItem('usdBalance', balance);
-    localStorage.setItem('btcBalance', btcbalance);
-
-
-    // Логирование изменений баланса, если были введены новые значения
-    if (newUsdBalance !== null && newBtcBalance !== null) {
-        logTransaction(oldUsdBalance, oldBtcBalance, balance, btcbalance);
-    }
-}
-
-// Функция логирования изменений баланса (предполагается, что она у вас уже есть)
-function logTransaction(oldUsdBalance, oldBtcBalance, newUsdBalance, newBtcBalance) {
-    console.log(`Баланс изменён: USD с ${oldUsdBalance.toFixed(2)} на ${newUsdBalance.toFixed(2)}, BTC с ${oldBtcBalance.toFixed(8)} на ${newBtcBalance.toFixed(8)}.`);
-}
-
-// Вызовите функцию updateBalances при загрузке страницы
-window.onload = function() {
-    updateBalances(); // Инициализирует и обновляет балансы при загрузке страницы
-};
-
-
-function logTransaction(oldUsd, oldBtc, newUsd, newBtc) {
-    // Формирование сообщения о транзакции
-    const transactionMessage = `Баланс изменен: USD с ${oldUsd.toFixed(2)} на ${newUsd.toFixed(2)}, BTC с ${oldBtc.toFixed(8)} на ${newBtc.toFixed(8)}.`;
-    transactionLog.push(transactionMessage); // Добавление сообщения в лог
-    
-    // Вывод последних 5 транзакций в консоль
-    console.log("Последние транзакции:");
-    transactionLog.slice(-5).forEach((transaction, index) => {
-        console.log(`${index + 1}: ${transaction}`);
-    });
-}
-
-// Функция для автоматического сохранения балансов каждые N минут
-function autoSaveBalances(intervalMinutes = 5) {
-    setInterval(() => {
-        localStorage.setItem('usdBalance', balance);
-        localStorage.setItem('btcBalance', btcbalance);
-        console.log('Балансы автоматически сохранены.');
-    }, intervalMinutes * 60000); // Преобразование минут в миллисекунды
-}
-
-// Вызовите эту функцию один раз при загрузке страницы или при инициализации
-autoSaveBalances(5); // Автоматическое сохранение каждые 5 минут
-
-// Функция для автоматического обновления курса BTC (заглушка, предполагает наличие функции getBtcUsdRate)
-async function updateBtcRate() {
-    const rate = await getBtcUsdRate(); // Предполагается, что эта функция возвращает текущий курс BTC к USD
-    document.getElementById('btcRate').textContent = `1 BTC = $${rate.toFixed(2)}`;
-}
-
-// Функция заглушка для получения курса BTC к USD (необходимо реализовать)
-async function getBtcUsdRate() {
-    // Здесь должен быть код для получения актуального курса, например, через запрос к API
-    return 50000; // Пример возвращаемого значения
-}
-
-
-// Функция для сохранения балансов в localStorage
-function saveBalances() {
-    localStorage.setItem('usdBalance', balance);
-    localStorage.setItem('btcBalance', btcbalance);
-}
-
-// Вызовите updateBalances при загрузке страницы, чтобы отобразить текущий баланс
-window.onload = function() {
-    updateBalances();
-    // Другие функции загрузки, если они есть
-};
-
-// В вашей функции automateTrading, добавьте вызовы функций обновления и сохранения баланса
 function automateTrading(currentRsi, currentPrice) {
     const investAmount = balance / 10; // Сумма инвестиций равна 1/10 текущего баланса
     const rsiBuyThreshold = 30;
     const rsiSellThreshold = 70;
 
+    // Логирование действий для отслеживания операций
     let actionTaken = 'Никаких действий не выполнено';
 
     if (currentRsi < rsiBuyThreshold) {
-        let coinsToBuy = investAmount / currentPrice;
+        let coinsToBuy = investAmount / currentPrice; // Максимальное количество монет, которое можно купить на 1/10 баланса
         if (coinsToBuy > 0) {
-            balance -= coinsToBuy * currentPrice;
-            btcbalance += coinsToBuy;
-            actionTaken = `Выполнена покупка ${coinsToBuy.toFixed(8)} монет по цене ${currentPrice}.`;
+            balance -= coinsToBuy * currentPrice; // Уменьшаем баланс на стоимость купленных монет
+            btcbalance += coinsToBuy; // Увеличиваем количество криптовалюты
+            actionTaken = `Выполнена покупка ${coinsToBuy.toFixed(8)} монет по цене ${currentPrice}. Новый баланс: ${balance.toFixed(2)}, BTC: ${btcbalance.toFixed(8)}`;
         }
     }
 
     if (currentRsi > rsiSellThreshold && btcbalance > 0) {
-        const coinsToSell = btcbalance;
-        balance += coinsToSell * currentPrice;
-        btcbalance -= coinsToSell;
-        actionTaken = `Выполнена продажа ${coinsToSell.toFixed(8)} монет по цене ${currentPrice}.`;
+        const coinsToSell = btcbalance; // Продаем всю имеющуюся криптовалюту
+        balance += coinsToSell * currentPrice; // Увеличиваем баланс на стоимость проданных монет
+        btcbalance -= coinsToSell; // Уменьшаем количество криптовалюты
+        actionTaken = `Выполнена продажа ${coinsToSell.toFixed(8)} монет по цене ${currentPrice}. Новый баланс: ${balance.toFixed(2)}, BTC: ${btcbalance.toFixed(8)}`;
     }
 
-    // Обновление и сохранение баланса
-    updateBalances();
-    saveBalances();
     console.log(actionTaken);
 }
-
     
 
 // Функция для обновления рекомендаций на основе MACD и RSI
@@ -323,7 +215,7 @@ function updateRecommendations(prices) {
     const lastMACD = MACDLine.slice(-1);
     const lastSignal = signalLine.slice(-1);
     const rsi = calculateRSI(closingPrices);
-    
+    console.log(rsi);
     // Генерация торговых сигналов на основе MACD
     let macdSignal;
     if (lastMACD > lastSignal) {
@@ -562,13 +454,4 @@ function expandContainer() {
     const container = document.querySelector('.container');
 
     container.classList.add('container-expanding');
-}
-
-function toggleBalances() {
-    var balancesDiv = document.getElementById("balances");
-    if (balancesDiv.style.display === "none") {
-        balancesDiv.style.display = "block"; // Если блок скрыт, показываем его
-    } else {
-        balancesDiv.style.display = "none"; // Иначе скрываем
-    }
 }

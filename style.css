@@ -71,9 +71,10 @@ body {
     padding: 20px;
     background-color: var(--container-background-color);
     border-radius: 20px;
+    transition: max-height 2s ease-in-out, opacity 2s ease; /* Обновленная анимация */
     overflow: hidden;
-    opacity: 1;
-    max-height: none; /* Изменено для удаления анимации */
+    opacity: 1; /* Контейнер полностью видим с самого начала */
+    max-height: 200px; /* Начальная максимальная высота, достаточно большая, чтобы вместить начальное содержимое */
 }
 
 .container-expanding {
@@ -132,8 +133,8 @@ body {
 
 .input-container button {
     padding: 10px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.623); /* Белая обводка */
-    background-color: #578a57a2; /* Зеленый цвет */
+    border: none;
+    background-color: var(--button-background-color);
     color: var(--text-color);
     cursor: pointer;
     border-radius: 5px;
@@ -144,7 +145,6 @@ body {
 }
 
 .main-wrapper {
-    position: relative;
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* Минимальная высота всей видимой области */
@@ -181,6 +181,7 @@ h3 {
     background-color: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый фон */
     border-radius: 15px; /* Скругленные углы */
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Легкая тень для добавления глубины */
+    transition: background-color 0.5s ease; /* Плавная анимация при смене фона */
 }
 
 .chart-container canvas {
@@ -235,27 +236,6 @@ h3 {
     transform: translateY(5px); /* Опускаем иконку немного ниже */
 }
 
-#balances {
-    display: none; /* Блоки скрыты по умолчанию */
-}
-
-.toggle-button {
-    position: absolute; /* Абсолютное позиционирование относительно ближайшего родителя с относительным позиционированием */
-    top: 10px; /* Отступ сверху */
-    right: 10px; /* Отступ справа */
-    opacity: 0; /* Скрывает кнопку */
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    width: 150px; /* Можете адаптировать под ваш дизайн */
-    height: 50px; /* Можете адаптировать под ваш дизайн */
-}
-
-.toggle-button:hover {
-    opacity: 0.5; /* Сделать кнопку немного видимой при наведении для индикации пользователям */
-}
-
-
 @media (max-width: 900px) {
     .sidebar, .timezones-container {
         display: none; /* Скрываем боковую панель и контейнеры временных зон на маленьких экранах */
@@ -264,17 +244,8 @@ h3 {
     .main-wrapper {
         flex-direction: column; /* Элементы теперь будут расположены вертикально */
         padding: 0;
-        border-radius: 0%;
     }
 
-    .input-container button {
-        padding: 0; /* Может быть изменено, если кнопка содержит текст или иконку */
-        width: 40px; /* Ширина кнопки */
-        height: 40px; /* Высота кнопки, делает ее квадратной */
-        border-radius: 50%; /* Делает кнопку круглой */
-        margin-left: -10px; /* Перекрывает правый край поисковой строки для симметрии */
-    }
-    
     .container {
         width: 100%; /* Контейнер теперь занимает всю доступную ширину */
         margin: 0 auto; /* Убираем отрицательные отступы и центрируем контейнер */
@@ -282,9 +253,6 @@ h3 {
         border-radius: 10px; /* Подтверждаем закругленные углы контейнера */
         box-shadow: none; /* Подтверждаем отсутствие тени с контейнера */
         overflow: hidden; /* Подтверждаем скрытие содержимого, выходящего за пределы контейнера */
-        border-radius: 0%;
-        padding-left: 0px;
-        padding-right: 0px;
     }
     
     .buttons-container {
@@ -293,9 +261,10 @@ h3 {
         justify-content: space-around; /* Распределяем кнопки равномерно в контейнере */
     }
 
-    .input-container {
-        margin: 20px auto; /* Центрируем контейнер ввода */
-        padding: 10px; /* Уменьшаем паддинг */
+    .input-container input {
+        width: 80%; /* Уменьшаем ширину строки поиска */
+        margin: 10px auto; /* Центрируем строку поиска и добавляем вертикальный отступ */
+        padding: 10px; /* Можно настроить паддинг для лучшей визуализации и комфорта при вводе */
     }
     
     .crypto-button {
@@ -303,31 +272,34 @@ h3 {
         margin: 5px 5px; /* Небольшой вертикальный отступ для каждой кнопки */
     }
 
-    .controls-container {
+    .controls-container, .input-container {
         flex-direction: column; /* Элементы управления будут располагаться вертикально */
     }
 
-    .input-container {
-        display: flex;
-        align-items: center; /* Это гарантирует, что элементы в контейнере выровнены по центру по вертикали */
-        justify-content: space-between; /* Это устанавливает распределение пространства между элементами */
-    }
-
     #cryptoInput {
-        flex-grow: 1; /* Заставляет поле ввода занимать все доступное пространство */
-        margin-right: 10px; /* Добавляет небольшой отступ справа, чтобы было пространство между полем ввода и кнопкой */
-        padding: 12px 24px; /* Увеличивает внутренний отступ */
-        border-radius: 25px 0 0 25px; /* Закругляет только левые углы */
+        width: 80%; /* Уменьшаем ширину кнопок и поля ввода до 80% */
+        margin: 10px auto; /* Центрируем и добавляем вертикальный отступ */
+        padding: 12px 24px; /* Увеличиваем паддинг для кнопок */
+        border-radius: 25px; /* Добавляем закругленные углы кнопкам */
     }
 
-    #cryptoInput, .input-container button {
-        margin: 0; /* Убираем верхний и нижний маржин */
-        padding: 12px; /* Можно отрегулировать паддинг по необходимости */
+    .chart-container {
+        width: calc(100% - 40px); /* Уменьшаем ширину контейнера графиков для учета паддинга */
+        margin: 11px auto; /* Центрируем и добавляем отступы вокруг контейнера графиков */
+        padding: 20px; /* Добавляем внутренние отступы контейнера графиков */
+        background-color: var(--container-background-color); /* Используем цвет фона из темы */
+        border-radius: 15px; /* Добавляем скругленные углы контейнера графиков */
     }
 
-    
+    .chart-container canvas {
+        width: 100%; /* Канвас графика занимает всю ширину контейнера */
+    }
+
+    #cryptoChart, #macdChartNew, #rsiChartNew {
+        margin-bottom: 20px; /* Добавляем нижний отступ для канвасов графиков */
+    }
+
+    .macd-title, .rsi-title {
+        font-size: 16px; /* Уменьшаем размер шрифта для заголовков на мобильных устройствах */
+    }
 }
-
-
-
-
