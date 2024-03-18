@@ -4,9 +4,19 @@ const apiUrl = 'https://api.coingecko.com/api/v3/coins/'; // Обновленн�
 let macdChart;
 let rsiChart;
 
+let balance = 100000
+let btcbalance = 0
+
+const style = getComputedStyle(document.documentElement);
+const chartTextColor = style.getPropertyValue('--chart-text-color').trim();
+const chartLineColor = style.getPropertyValue('--chart-line-color').trim();
+const chartBackgroundColor = style.getPropertyValue('--chart-background-color').trim();
+const rsiCtx = document.getElementById('rsiChartNew').getContext('2d');
+let numberColor;
+let cryptoid;
 // Функция для изменения отображаемой криптовалюты
 async function changeCrypto(cryptoId) {
-    // Получение исторических данных для криптовалюты
+    cryptoid=cryptoId
     const endDate = new Date();
     const startDate = new Date();
     startDate.setDate(endDate.getDate() - 30); // Берем данные за последние 30 дней
@@ -30,10 +40,7 @@ async function changeCrypto(cryptoId) {
         macdChart?.destroy?.()
         rsiChart?.destroy?.()
 
-        /
         displayMacdAndRsiCharts(macdData, rsiData, prices); // Вызываем функцию для отображения графиков
-
-        
 
     } else {
         console.error('Ошибка при получении данных');
@@ -42,17 +49,19 @@ async function changeCrypto(cryptoId) {
 
 // Функция для обновления графика
 function updateChart(prices, cryptoId) {
-    const priceValues = prices.map(price => price.y);
-    const pricedays = prices.map(price => price.x);
+    // Получаем стили для чтения CSS переменных
+    const style = getComputedStyle(document.body);
     
-    const smaValues = calculateSMA(priceValues, 14); 
+    const samplingRate = 4;
+    const sampledPrices = prices.filter((_, index) => index % samplingRate === 0);
     
-    const smaPoints = prices.slice(14 - 1).map((price, index) => ({
+    const smaValues = calculateSMA(sampledPrices.map(price => price.y), 14);
+
+    const smaPoints = sampledPrices.slice(14 - 1).map((price, index) => ({
         x: price.x,
-        y: smaValues[index]
-    }));
-    console.log(smaPoints);
-    
+        y: smaValues[index] || null // Используем || null для избежания ошибок
+    })).filter(point => point.y !== null);
+
     if (cryptoChart) {
         cryptoChart.destroy(); 
     }
@@ -62,16 +71,17 @@ function updateChart(prices, cryptoId) {
         type: 'line',
         data: {
             datasets: [{
-                label: `${cryptoId.toUpperCase()} Цена в USD`,
-                data: prices,
-                borderColor: 'rgb(75, 192, 192)',
+                label: `${cryptoId.toUpperCase()} Price in USD`,
+                data: sampledPrices,
+                borderColor: style.getPropertyValue('--crypto-line-color'), // Изменено на CSS переменную
                 tension: 0.1
             },
             {
-                label: 'SMA 14 дней',
+                label: 'SMA 14 Days',
                 data: smaPoints,
-                borderColor: 'rgb(255, 206, 86)',
-                tension: 0.1
+                borderColor: style.getPropertyValue('--sma-line-color'), // Изменено на CSS переменную
+                tension: 0.1,
+                pointRadius: 0
             }]
         },
         options: {
@@ -86,6 +96,9 @@ function updateChart(prices, cryptoId) {
         }
     });
 }
+
+
+
 
 
 function calculateEMA(prices, days) {
@@ -149,8 +162,6 @@ function calculateRSI(prices, period = 14) {
         }
     }
 
-   
-
     return rsiArray;
 }
 
@@ -166,6 +177,34 @@ function calculateSMA(prices, period) {
     return sma;
 }
 
+function automateTrading(currentRsi, currentPrice) {
+    const investAmount = balance / 10; // Сумма инвестиций равна 1/10 текущего баланса
+    const rsiBuyThreshold = 30;
+    const rsiSellThreshold = 70;
+
+    // Логирование действий для отслеживания операций
+    let actionTaken = 'Никаких действий не выполнено';
+
+    if (currentRsi < rsiBuyThreshold) {
+        let coinsToBuy = investAmount / currentPrice; // Максимальное количество монет, которое можно купить на 1/10 баланса
+        if (coinsToBuy > 0) {
+            balance -= coinsToBuy * currentPrice; // Уменьшаем баланс на стоимость купленных монет
+            btcbalance += coinsToBuy; // Увеличиваем количество криптовалюты
+            actionTaken = `Выполнена покупка ${coinsToBuy.toFixed(8)} монет по цене ${currentPrice}. Новый баланс: ${balance.toFixed(2)}, BTC: ${btcbalance.toFixed(8)}`;
+        }
+    }
+
+    if (currentRsi > rsiSellThreshold && btcbalance > 0) {
+        const coinsToSell = btcbalance; // Продаем всю имеющуюся криптовалюту
+        balance += coinsToSell * currentPrice; // Увеличиваем баланс на стоимость проданных монет
+        btcbalance -= coinsToSell; // Уменьшаем количество криптовалюты
+        actionTaken = `Выполнена продажа ${coinsToSell.toFixed(8)} монет по цене ${currentPrice}. Новый баланс: ${balance.toFixed(2)}, BTC: ${btcbalance.toFixed(8)}`;
+    }
+
+    console.log(actionTaken);
+}
+    
+
 // Функция для обновления рекомендаций на основе MACD и RSI
 function updateRecommendations(prices) {
     // Извлечение цен закрытия
@@ -176,7 +215,7 @@ function updateRecommendations(prices) {
     const lastMACD = MACDLine.slice(-1);
     const lastSignal = signalLine.slice(-1);
     const rsi = calculateRSI(closingPrices);
-
+    
     // Генерация торговых сигналов на основе MACD
     let macdSignal;
     if (lastMACD > lastSignal) {
@@ -189,9 +228,9 @@ function updateRecommendations(prices) {
 
     // Генерация торговых сигналов на основе RSI
     let rsiSignal;
-    if (rsi > 70) {
+    if (rsi.slice(-2)[0] > 70) {
         rsiSignal = 'Продавать'; // RSI выше 70 считается перекупленностью
-    } else if (rsi < 30) {
+    } else if (rsi.slice(-2)[0] < 30) {
         rsiSignal = 'Покупать'; // RSI ниже 30 считается перепроданностью
     } else {
         rsiSignal = 'Держать'; // RSI находится в нормальном диапазоне
@@ -199,6 +238,8 @@ function updateRecommendations(prices) {
 
     // Обновление текста рекомендаций на странице
     document.getElementById('recommendations').innerText = `MACD Сигнал: ${macdSignal}, RSI Сигнал: ${rsiSignal}`;
+
+    automateTrading(rsi.slice(-2)[0],closingPrices.slice(-1)[0]);
 }
 
 function requestCrypto() {
@@ -210,32 +251,20 @@ function requestCrypto() {
     }
 }
 
-function updateClocks() {
-    const formatOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    // Нью-Йорк (UTC-4)
-    document.getElementById('timeNYC').innerText = 'Нью-Йорк: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'America/New_York'});
-    // Лондон (UTC+1)
-    document.getElementById('timeLondon').innerText = 'Лондон: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Europe/London'});
-    // Москва (UTC+3)
-    document.getElementById('timeKyiv').innerText = 'Киев: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Europe/Moscow'});
-    // Токио (UTC+9)
-    document.getElementById('timeTokyo').innerText = 'Токио: ' + new Date().toLocaleTimeString('ru-RU', {...formatOptions, timeZone: 'Asia/Tokyo'});
-}
-
-setInterval(updateClocks, 1000);
-
 function setTheme(themeName) {
     localStorage.setItem('theme', themeName);
     document.body.className = themeName + '-theme';
+    
 }
 
 // Функция для установки темы при загрузке страницы
 function loadTheme() {
     const theme = localStorage.getItem('theme') || 'light'; // По умолчанию светлая тема
     setTheme(theme);
+    
 }
 
-// Вызовите функцию loadTheme при загрузке страницы
+
 window.onload = loadTheme;
 
 
@@ -252,21 +281,24 @@ function displayMacdAndRsiCharts(macdData, rsiData, pricesDates) {
                 {
                     label: 'MACD Line',
                     data: MACDLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
-                    borderColor: 'blue',
-                    borderWidth: 1,
-                    fill: false
+                    borderColor: style.getPropertyValue('--chart-line-color'), // Используем CSS переменную для цвета линии
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
                 },
                 {
                     label: 'Signal Line',
                     data: signalLine.map((value, index) => ({ x: pricesDates[index].x, y: value })),
-                    borderColor: 'red',
-                    borderWidth: 1,
-                    fill: false
+                    borderColor: style.getPropertyValue('--chart-line-color'), // Используем CSS переменную для цвета линии
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
                 },
                 {
                     label: 'Histogram',
                     data: histogram.map((value, index) => ({ x: pricesDates[index].x, y: value })),
-                    borderColor: 'green',
+                    borderColor: 'green', // Зеленый для гистограммы
+                    backgroundColor: style.getPropertyValue('--chart-background-color'), // Используем CSS переменную для цвета фона
                     borderWidth: 1,
                     type: 'bar'
                 }
@@ -275,36 +307,10 @@ function displayMacdAndRsiCharts(macdData, rsiData, pricesDates) {
         options: {
             scales: {
                 y: {
-                    beginAtZero: false
-                },
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day' // Можно установить нужный формат времени
+                    beginAtZero: false,
+                    ticks: {
+                        color: numberColor // Используем CSS переменную для цвета текста
                     }
-                }
-            }
-        }
-    });
-
-    // Создание графика RSI
-    const rsiCtx = document.getElementById('rsiChartNew').getContext('2d');
-    rsiChart = new Chart(rsiCtx, {
-        type: 'line',
-        data: {
-            labels: pricesDates.map(date => date.x), // Метки времени для оси X
-            datasets: [{
-                label: 'RSI',
-                data: rsiData,
-                borderColor: 'purple',
-                borderWidth: 1,
-                fill: false
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: false
                 },
                 x: {
                     type: 'time',
@@ -313,28 +319,147 @@ function displayMacdAndRsiCharts(macdData, rsiData, pricesDates) {
                         displayFormats: {
                             day: 'MMM dd'
                         }
+                    },
+                    ticks: {
+                        color: numberColor // Используем CSS переменную для цвета текста
                     }
                 }
             }
         }
     });
+
+// Создание графика RSI
+const rsiCtx = document.getElementById('rsiChartNew').getContext('2d');
+rsiChart = new Chart(rsiCtx, {
+    type: 'line',
+    data: {
+        labels: pricesDates.map(date => date.x), // Метки времени для оси X
+        datasets: [{
+            label: 'RSI',
+            data: rsiData,
+            borderColor: '#8A2BE2', // Фиолетовый цвет линии RSI
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0 // Отключает точки на графике для RSI
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: false,
+                ticks: {
+                    color: numberColor // Цвет текста для оси Y
+                }
+            },
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'day',
+                    displayFormats: {
+                        day: 'MMM dd'
+                    }
+                },
+                ticks: {
+                    color: numberColor // Цвет текста для оси X
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#FF9F40' // Оранжевый цвет текста легенды
+                }
+            },
+            annotation: {
+                annotations: {
+                    line70: {
+                        type: 'line',
+                        yMin: 70,
+                        yMax: 70,
+                        borderColor: '#BF3030', // Красный цвет линии перекупленности (Overbought)
+                        borderWidth: 2,
+                        xMin: pricesDates[0].x,
+                        xMax: pricesDates[pricesDates.length - 1].x,
+                        label: {
+                            enabled: true,
+                            content: 'Overbought',
+                            position: 'start',
+                            xAdjust: +1,
+                            yAdjust: -20,
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            color: '#FF6363', // Светло-красный цвет текста для лейбла "Overbought"
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    line30: {
+                        type: 'line',
+                        yMin: 30,
+                        yMax: 30,
+                        borderColor: '#2E8A21', // Зеленый цвет линии перепроданности (Oversold)
+                        borderWidth: 2,
+                        xMin: pricesDates[0].x,
+                        xMax: pricesDates[pricesDates.length - 1].x,
+                        label: {
+                            enabled: true,
+                            content: 'Oversold',
+                            position: 'start',
+                            xAdjust: +1,
+                            yAdjust: -20,
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            color: '#4BC0C0', // Светло-зеленый цвет текста для лейбла "Oversold"
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+});
+
+
 }
 
 function toggleTheme() {
-    let currentTheme = localStorage.getItem('theme') || 'light';
+    const bodyClass = document.body.className;
+    //po dikty berem znacheniya cveta
+    const themes = {
+        light: '#000',
+        dark: '#FFF',
+        neutral : '#000'
+    }
     let newTheme;
-
-    if (currentTheme === 'light') {
+    if (bodyClass.includes('light-theme')) {
         newTheme = 'dark';
-    } else if (currentTheme === 'dark') {
+    } else if (bodyClass.includes('dark-theme')) {
         newTheme = 'neutral';
     } else {
         newTheme = 'light';
     }
 
-    localStorage.setItem('theme', newTheme);
     document.body.className = `${newTheme}-theme`;
-    updateThemeIcon(newTheme); // Обновляем иконку в соответствии с новой темой
+    
+    //prisvaivaem po indexy znachenie
+    numberColor = themes[newTheme]
+    
+    
+    updateThemeIcon(newTheme); 
+    //kostylno menyam bykvalno cvet graphika pri smene temi
+    rsiChart.options.scales.y.ticks.color= numberColor
+    rsiChart.options.scales.x.ticks.color= numberColor
+    macdChart.options.scales.y.ticks.color= numberColor
+    macdChart.options.scales.x.ticks.color= numberColor
+    cryptoChart.options.scales.x.ticks.color= numberColor
+    cryptoChart.options.scales.y.ticks.color= numberColor
+    //updatim graphik
+    cryptoChart.update()
+    rsiChart.update()
+    macdChart.update()
+
+    
 }
 
 function updateThemeIcon(theme) {
@@ -342,28 +467,23 @@ function updateThemeIcon(theme) {
     // Предположим, что у вас есть разные файлы изображений для каждой темы
     switch (theme) {
         case 'light':
-            themeIcon.src = 'icons/icon1.png'; // Установите путь к вашему изображению для светлой темы
+            themeIcon.src = 'icons/icon1.png'; // Путь к вашему изображению для светлой темы
             break;
         case 'dark':
-            themeIcon.src = 'icons/icon2.png'; // Установите путь к вашему изображению для темной темы
+            themeIcon.src = 'icons/icon2.png'; // Путь к вашему изображению для темной темы
             break;
         case 'neutral':
-            themeIcon.src = 'icons/icon3.png'; // Установите путь к вашему изображению для нейтральной темы
+            themeIcon.src = 'icons/icon3.png'; // Путь к вашему изображению для нейтральной темы
             break;
         default:
             themeIcon.src = 'icons/icon1.png'; // Фолбек на светлую тему
     }
 }
 
-// Объект с SVG иконками для каждой темы
-const themeIcons = {
-    light: '<svg>...</svg>', // SVG для светлой темы
-    dark: '<svg>...</svg>', // SVG для темной темы
-    neutral: '<svg>...</svg>' // SVG для нейтральной темы
+// Устанавливаем класс темы для body в соответствии с сохраненной темой при загрузке страницы
+window.onload = function() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.className = `${savedTheme}-theme`;
+    updateThemeIcon(savedTheme);
 };
 
-// Устанавливаем иконку в соответствии с сохраненной темой при загрузке страницы
-window.onload = function() {
-    loadTheme();
-    updateThemeIcon(localStorage.getItem('theme') || 'light');
-};
