@@ -22,6 +22,8 @@ body {
     --button-hover-background-color: #707070; /* Еще более темный серый для эффекта при наведении */
     --input-border-color: #A4A4A4; /* Серый для границ ввода, четкий и эстетичный */
     --timezone-background-color: #C2C2C2; /* Светлый серый для фонов временных зон, спокойный и нейтральный */
+
+    --chart-background-color: #ff0000;
 }
 
 .dark-theme {
